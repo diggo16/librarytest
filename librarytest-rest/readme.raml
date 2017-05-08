@@ -1,0 +1,462 @@
+#%RAML 0.8
+title: Library Test
+version: 2.0
+baseUri: http://localhost:8080/librarytest-rest/
+documentation:
+  - title: Library Test REST API
+    content: |
+      The REST API currently supports Books and Authors.
+      All endpoints support XML or JSON as input and output.
+      Use your HTTP request headers to specify media type.
+
+/books:
+  displayName: BOOKS
+
+  description: |
+    Obligatory fields: 
+    * title
+  post:
+    description: |
+      Create a new book.
+    body:
+      application/json:
+        example: |
+          {
+            "book": {
+              "author": {
+                "id": 4,
+                "country":"Great Britain",
+                "firstName": "Arthur C.",
+                "lastName": "Clarke"
+              },
+              "description": "Book description...",
+              "isbn": "0-575-01587-X",
+              "nbrPages": 256,
+              "publicationDate": "1973-06-28",
+              "title": "Rendezvous with Rama",
+              "totalNbrCopies": 4
+            }
+          }
+      application/xml:
+        example: |
+          <book>
+            <id>6</id>
+            <author>
+              <id>4</id>
+              <bio>Author bio...</bio>
+              <country>Great Britain</country>
+              <firstName>Arthur C.</firstName>
+              <lastName>Clarke</lastName>
+            </author>
+            <description>Book description...</description>
+            <isbn>0-575-01587-X</isbn>
+            <nbrPages>256</nbrPages>
+            <publicationDate>1973-06-28</publicationDate>
+            <title>Rendezvous with Rama</title>
+            <totalNbrCopies>4</totalNbrCopies>
+          </book>
+    responses:
+      201:
+        description: The book was created.
+      400:
+        description: |
+          * The book's id was already in the database.
+          * The book had no title set.
+          * The book contained an author with no id field set.
+          * The book contained an author that didn't exist in the database.
+  put:
+    description: |
+      Update a book with new data.
+    responses:
+      200:
+        description: The book was updated.
+      404:
+        description: The book was not found.
+      400:
+        description: |
+          * The book had no title set.
+          * The book contained an author with no id field set.
+          * The book contained an author that didn't exist in the database.
+  get:
+    description: |
+      Get all the books from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The book id.
+    get:
+      description: |
+        Get the book with the specified id.
+      responses:
+        200:
+          description: The book was retrieved.
+        404:
+          description: The book was not found.
+    delete:
+      description: 
+        Delete the book with the specified id. NOTE - This also deletes all loans of this book.
+      responses:
+        204:
+          description: The book was deleted.
+        404:
+          description: The book was not found.
+
+  /byauthor/{author_id}:
+    uriParameters:
+      author_id:
+        type: integer
+        description: The author id.
+    get:
+      description: 
+        Get all the books by the specified author.
+
+  /{book_id}/authors:
+    get:
+      description: 
+        Get the authors of the specified book.
+      responses:
+        200:
+          description: 
+            The book was found and the authors were retrieved.
+        404:
+          description: 
+            The book was not found.
+    post:
+      description: 
+        Add an author to the specified book.
+      responses:
+        200:
+          description: 
+            The book was found and the author was added to the book.
+        400:
+          description: |
+            * The author did not have the id field set.
+            * The author was already an author of this book.
+        404:
+          description: 
+            The book was not found.
+    put:
+      description: 
+        Update a book's list of authors with a new list of authors.
+      responses:
+        200:
+          description: 
+            The book was found and the list of authors was updated.
+        400:
+          description: |
+            * One of the authors did not have the id field set.
+            * One of the authors was already an author of this book.
+        404:
+          description: 
+            The book was not found.
+
+/authors:
+  displayName: AUTHORS
+
+  description: |
+    Obligatory fields: 
+    * firstName
+    * lastName
+  post:
+    description: |
+      Create a new author.
+    body:
+      application/json:
+        example: |
+          {
+            "author": {
+              "bio": "Author bio...",
+              "country": "Great Britain",
+              "firstName": "Neil",
+              "lastName": "Gaiman"
+            }
+          }
+      application/xml:
+        example: |
+          <author>
+            <bio>Author bio...</bio>
+            <country>Great Britain</country>
+            <firstName>Neil</firstName>
+            <lastName>Gaiman</lastName>
+          </author>
+    responses:
+      201:
+        description: The author was created.
+      400:
+        description: |
+          * The author's id was already in the database.
+          * The author had no first name.
+          * The author had no last name.
+  put:
+    description: |
+      Update an author with new data.
+    responses:
+      200:
+        description: The author was updated.
+      400:
+        description: |
+          * The author had no first name.
+          * The author had no last name.
+      404:
+        description: The author was not found.
+  get:
+    description: |
+      Get all the authors from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The author id.
+    get:
+      description: |
+        Get the author with the specified id.
+      responses:
+        200:
+          description: The author was retrieved.
+        404:
+          description: The author was not found.
+    delete:
+      description: 
+        Delete the author with the specified id.
+      responses:
+        204:
+          description: The author was deleted.
+        404:
+          description: The author was not found.
+        409:
+          description: The author still has books in the database.
+
+/users:
+  displayName: USERS
+
+  description: |
+    Obligatory fields: 
+    * displayName (unique)
+    * password
+    * role
+  post:
+    description: |
+      Create a new user.
+    body:
+      application/json:
+        example: |
+          {
+            "user": {
+              "displayName": "lennart",
+              "email": "lennart@example.com",
+              "firstName": "Lennart",
+              "lastName": "Moraeus",
+              "password": "sha1:64000:18:dEWHImOGXLMFK5DudwnT1CmAPuoC3Pw5:ch1v4mMFWcgvyW7pum42QuK6",
+              "phone": "+46000333444", 
+              "role":"LOANER"
+            }
+          }
+      application/xml:
+        example: |
+          <user>
+            <displayName>lennart</displayName>
+            <email>lennart@example.com</email>
+            <firstName>Lennart</firstName>
+            <lastName>Moraeus</lastName>
+            <password>sha1:64000:18:/hlv8GukLqYbu9VnvNQv3b/8sFIOAn3A:YG2DMM8PmPcYR3qgD1FivtM1</password>
+            <phone>+46000333444</phone>
+            <role>LOANER</role>
+          </user>
+    responses:
+      201:
+        description: The user was created.
+      400:
+        description: |
+          * The user's id was already in the database.
+          * The user had no display name.
+          * The user had no password.
+          * The user had no role.
+          * The user's display name already exists.
+  put:
+    description: |
+      Update a user with new data.
+    responses:
+      200:
+        description: The user was updated.
+      400:
+        description: |
+          * The user had no display name.
+          * The user had no password.
+          * The user had no role.
+          * The user's display name already exists in another user.
+      404:
+        description: The user was not found.
+  get:
+    description: |
+      Get all the users from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The user id.
+    get:
+      description: |
+        Get the user with the specified id.
+      responses:
+        200:
+          description: The user was retrieved.
+        404:
+          description: The user was not found.
+    delete:
+      description: 
+        Delete the user with the specified id. NOTE - This also deletes all loans of this user.
+      responses:
+        204:
+          description: The user was deleted.
+        404:
+          description: The user was not found.
+
+/loans:
+  displayName: LOANS
+
+  description: |
+    Obligatory fields: 
+    * user
+    * book
+  post:
+    description: |
+      Create a new loan.
+    body:
+      application/json:
+        example: |
+          {
+            "loan": {
+              "book": {
+                "id": 4,
+                "title": "Time's Eye"
+              },
+              "dateBorrowed": "2016-05-06",
+              "dateDue": "2016-05-07",
+              "user": {
+                "id": 13,
+                "displayName": "lennart",
+              }
+            }
+          }
+      application/xml:
+        example: |
+          <loan>
+            <book>
+              <id>4</id>
+              <title>Time's Eye</id>
+            </book>
+            <dateBorrowed>2016-05-06</dateBorrowed>
+            <dateDue>2016-05-07</dateDue>
+            <user>
+              <id>13</id>
+              <displayName>lennart</displayName>
+            </user>
+          </loan>
+    responses:
+      201:
+        description: The loan was created.
+      400:
+        description: |
+          * The user was not set or was not found in the database.
+          * The book was not set or was not found in the database.
+          * The user had no role.
+          * The user's display name already exists.
+      409:
+        description: |
+          * There was already a loan present with the same book and user.
+          * There were not enough copies of the book available to create the loan.
+  put:
+    description: |
+      Update a loan with new data.
+    responses:
+      200:
+        description: The user was updated.
+      400:
+        description: |
+          * The loan had id set.
+          * The loan had no date borrowed set.
+          * The loan had no date due set.
+          * The user of the loan was changed.
+          * The book of the loan was changed.
+      404:
+        description: The loan was not found.
+  get:
+    description: |
+      Get all the loans from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The loan id.
+    get:
+      description: |
+        Get the loan with the specified id.
+      responses:
+        200:
+          description: The loan was retrieved.
+        404:
+          description: The loan was not found.
+    delete:
+      description: 
+        Delete the loan with the specified id. 
+      responses:
+        204:
+          description: The loan was deleted.
+        404:
+          description: The loan was not found.
+
+  /ofuser/{user_id}:
+    uriParameters:
+      user_id:
+        type: integer
+        description: The user id.
+    get:
+      description: 
+        Get all the loans of the specified user.
+      responses:
+        200:
+          description: The loans were retrieved.
+        404:
+          description: |
+            * The user was not found.
+            * The user was found but there were no loans of the user.
+        
+  /ofbook/{book_id}:
+    uriParameters:
+      book_id:
+        type: integer
+        description: The book id.
+    get:
+      description: 
+        Get all the loans of the specified book.
+      responses:
+        200:
+          description: The loans were retrieved.
+        404:
+          description: |
+            * The book was not found.
+            * The book was found but there were no loans of the book.
+        
+  /ofuser/{user_id}/ofbook/{book_id}:
+    uriParameters:
+      user_id:
+        type: integer
+        description: The user id.
+      book_id:
+        type: integer
+        description: The book id.
+    get:
+      description: 
+        Get the loan of the specified book by the specified user, if such a loan exists.
+      responses:
+        200:
+          description: The loan was retrieved.
+        404:
+          description: |
+            * The book or user was not found.
+            * The book and user were found but there were no loans of the book by the user.
