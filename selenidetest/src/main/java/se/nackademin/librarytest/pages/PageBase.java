@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package se.nackademin.librarytest.pages;
 
 import com.codeborne.selenide.SelenideElement;
@@ -5,6 +10,9 @@ import com.codeborne.selenide.SelenideElement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author testautomatisering
+ */
 public class PageBase {
 
     private static final Logger LOG = Logger.getLogger(PageBase.class.getName());
@@ -18,15 +26,5 @@ public class PageBase {
         LOG.log(Level.INFO, "Setting {0} to {1}", new Object[]{descriptor, value});
         element.clear();
         element.sendKeys(value);
-    }
-    
-    protected String getTextFieldValue(String descriptor, SelenideElement element) {
-        LOG.log(Level.INFO, "Get value from {0}", descriptor);
-        return element.getText();
-    }
-    
-    protected boolean isDisplayed(String descriptor, SelenideElement element) {
-        LOG.log(Level.INFO, "Check if {0} is displayed", descriptor);
-        return element.isDisplayed();
     }
 }

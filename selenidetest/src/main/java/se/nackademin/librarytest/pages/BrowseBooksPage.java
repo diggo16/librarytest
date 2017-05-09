@@ -11,29 +11,24 @@ import org.openqa.selenium.support.FindBy;
 /**
  * @author testautomatisering
  */
-public class BrowseBooksPage extends MenuPage {
+public class BrowseBooksPage {
     @FindBy(css = "#gwt-uid-3")
     private SelenideElement titleField;
-    @FindBy(css = "#gwt-uid-7")
-    private SelenideElement isbnField;
     @FindBy(css = "#search-books-button")
     private SelenideElement searchBooksButton;
     @FindBy(css = "td.v-grid-cell:nth-child(1) > a:nth-child(1)")
     private SelenideElement firstResultTitle;
 
     public void clickFirstResultTitle() {
-        clickButton("first result title", firstResultTitle);
+        firstResultTitle.click();
     }
 
     public void setTitleField(String title) {
-        setTextFieldValue("title field", title, titleField);
-    }
-    
-    public void setIsbnField(String isbn) {
-        setTextFieldValue("isbn field", isbn, isbnField);
+        titleField.clear();
+        titleField.sendKeys(title);
     }
 
     public void clickSearchBooksButton() {
-        clickButton("search books button", searchBooksButton);
+        searchBooksButton.click();
     }
 }
