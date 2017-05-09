@@ -20,6 +20,8 @@ import se.nackademin.librarytest.pages.MyProfilePage;
 public class SelenideTest extends TestBase {
 
     public SelenideTest() {
+        System.setProperty("webdriver.chrome.driver", "/home/daniel/seleniumdrivers/chromedriver");
+        System.setProperty("selenide.browser", "Chrome");
     }
 
     @Test
@@ -28,6 +30,7 @@ public class SelenideTest extends TestBase {
         BrowseBooksPage browseBooksPage = page(BrowseBooksPage.class);
         //browseBooksPage.setTitleField("G");
         browseBooksPage.clickSearchBooksButton();
+        sleep(2000);
         Table table = new Table($(".v-grid-tablewrapper"));
         System.out.println(table.getColumnCount());
         System.out.println(table.getRowCount());

@@ -16,7 +16,7 @@ import org.junit.Before;
 public class TestBase {
     @Before
     public void setup() {
-        open("http://localhost:8000/librarytest");
+        open("http://localhost:8080/librarytest");
     }
 
     @After
