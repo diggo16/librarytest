@@ -30,7 +30,7 @@ public class SelenideTest extends TestBase {
         BrowseBooksPage browseBooksPage = page(BrowseBooksPage.class);
         //browseBooksPage.setTitleField("G");
         browseBooksPage.clickSearchBooksButton();
-        sleep(2000);
+        sleep(8000);
         Table table = new Table($(".v-grid-tablewrapper"));
         System.out.println(table.getColumnCount());
         System.out.println(table.getRowCount());
